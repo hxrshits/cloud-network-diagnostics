@@ -1,4 +1,4 @@
-# Cloud Network Diagnostics Toolkit
+# Cloud Network Diagnostics
 
 A Python-based CLI toolkit for Linux/WSL network diagnostics, troubleshooting, and connectivity checks.
 
