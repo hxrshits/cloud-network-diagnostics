@@ -29,5 +29,27 @@ def get_network_info():
             print()
 
 
+def get_default_gateway():
+    result = subprocess.run(
+        ["ip", "route"],
+        capture_output=True,
+        text=True
+    )
+
+    for line in result.stdout.splitlines():
+        if line.startswith("default"):
+            parts = line.split()
+
+            if "via" in parts:
+                gateway = parts[parts.index("via") + 1]
+                interface = parts[parts.index("dev") + 1]
+
+                print(f"Default Gateway : {gateway}")
+                print(f"Gateway Interface: {interface}")
+                return
+
+    print("Default Gateway : Not found")
+
 if __name__ == "__main__":
     get_network_info()
+    get_default_gateway()
