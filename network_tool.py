@@ -1,6 +1,6 @@
 import subprocess
 import re
-
+import socket
 
 def get_network_info():
     result = subprocess.run(
@@ -48,8 +48,21 @@ def get_default_gateway():
                 print(f"Gateway Interface: {interface}")
                 return
 
+
+def check_dns(domain="google.com"):
+    try:
+        ip_address = socket.gethostbyname(domain)
+
+        print(f"DNS Check       : {domain}")
+        print(f"Resolved IP     : {ip_address}")
+
+    except socket.gaierror:
+        print(f"DNS Check       : Failed to resolve {domain}")
+
+
     print("Default Gateway : Not found")
 
 if __name__ == "__main__":
     get_network_info()
     get_default_gateway()
+    check_dns()
