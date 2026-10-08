@@ -62,7 +62,30 @@ def check_dns(domain="google.com"):
 
     print("Default Gateway : Not found")
 
+
+def check_connectivity(host="8.8.8.8"):
+    result = subprocess.run(
+        ["ping", "-c", "4", host],
+        capture_output=True,
+        text=True
+    )
+
+    if result.returncode == 0:
+        print(f"Connectivity    : {host} reachable")
+
+        for line in result.stdout.splitlines():
+            if "packet loss" in line:
+                print(f"Packet Loss     : {line.strip()}")
+
+            if "min/avg/max" in line:
+                print(f"Latency         : {line.strip()}")
+    else:
+        print(f"Connectivity    : {host} unreachable")
+
+
+
 if __name__ == "__main__":
     get_network_info()
     get_default_gateway()
     check_dns()
+    check_connectivity()
