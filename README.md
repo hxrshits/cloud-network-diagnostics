@@ -1,43 +1,32 @@
-# Cloud Network Diagnostics
 
-A Python-based CLI toolkit for Linux/WSL network diagnostics, troubleshooting, and connectivity checks.
+# Cloud Network Diagnostics Toolkit
 
-This project is being developed step-by-step to build practical skills in:
+A Python-based CLI toolkit for Linux/WSL network diagnostics, connectivity checks, and troubleshooting.
 
-- Linux Networking
-- Computer Networking
-- Cloud Networking
-- Network Troubleshooting
-- Python Automation
+This project is being developed step-by-step to build practical skills in Linux networking, cloud networking, and Python automation.
 
 ## 🚧 Project Status
 
-**Work in Progress**
+**Work in Progress — Actively Developing**
 
-The toolkit is currently under active development. New networking diagnostics and troubleshooting features will be added gradually.
+## ✨ Features
 
-## 🎯 Planned Features
-
-- Network interface information
-- IP address detection
+- Network interface discovery (`lo`, `eth0`)
+- IPv4 address detection
 - Default gateway detection
-- Routing table information
-- DNS configuration and resolution checks
-- Internet connectivity testing
-- Ping and latency checks
-- Common port diagnostics
-- Network health checks
-- Troubleshooting/diagnostic mode
-- JSON output
-- Timestamped diagnostic reports
+- DNS resolution checks
+- DNS configuration inspection
+- Internet connectivity testing using `ping`
+- Basic latency and packet-loss reporting
 
-## 🛠️ Technologies
+## 🛠️ Technologies Used
 
 - Python 3
 - Linux / Ubuntu
 - WSL2
 - Linux networking commands
-- Git & GitHub
+- Python `subprocess`, `socket`, and `re` modules
+- Git and GitHub
 
 ## 📁 Project Structure
 
@@ -50,42 +39,59 @@ cloud-network-diagnostics/
 └── .gitignore
 ```
 
-## ▶️ Current Usage
+## ▶️ Getting Started
 
-Run the network diagnostics tool:
+### Prerequisites
+
+- Ubuntu or another Linux environment
+- Python 3
+- Git
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/hxrshits/cloud-network-diagnostics.git
+cd cloud-network-diagnostics
+```
+
+### Run the Tool
 
 ```bash
 python3 network_tool.py
 ```
 
-The current version retrieves Linux network interface information using the `ip addr` command.
+## 📚 Development Roadmap
 
-## 📚 Learning Journey
-
-This project is being developed incrementally.
-
-Each development step focuses on learning a networking concept, implementing it in Python, testing it locally, and committing the progress to GitHub.
-
-### Current Progress
-
-- [x] Project setup
-- [x] GitHub repository initialization
-- [x] Basic network interface discovery
-- [ ] IP address parsing
-- [ ] Default gateway detection
-- [ ] Routing diagnostics
-- [ ] DNS diagnostics
-- [ ] Connectivity testing
-- [ ] Port diagnostics
-- [ ] Network health checks
-- [ ] Troubleshooting mode
+- [x] Project setup and GitHub initialization
+- [x] Network interface discovery
+- [x] IPv4 address extraction
+- [x] Default gateway detection
+- [x] DNS resolution check
+- [x] DNS configuration inspection
+- [x] Connectivity and latency checks
+- [ ] Improved error handling and command timeouts
+- [ ] Routing table diagnostics
+- [ ] Port connectivity checks
+- [ ] Network health summary
+- [ ] Diagnostic mode (`--diagnose`)
 - [ ] JSON output
-- [ ] Report generation
+- [ ] Timestamped diagnostic reports
 
-## 🚀 Goal
+## 🎯 Project Goal
 
-The goal of this project is to develop practical Linux and networking skills that can be applied to **Cloud Networking, Cloud Support, and Cloud Operations** roles.
+To develop practical Linux networking, troubleshooting, and Python automation skills relevant to **Cloud Support, Cloud Networking, and Cloud Operations** roles.
+
+Each milestone is implemented, tested locally, and committed to GitHub.
+
+## 👨‍💻 Author
+
+**Harshit Saini**
+
+GitHub: [hxrshits](https://github.com/hxrshits)
 
 ---
 
-**Status:** 🚧 Actively developing
+**Status:** 🚧 Actively Developing
+
