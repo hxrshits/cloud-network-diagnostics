@@ -84,8 +84,36 @@ def check_connectivity(host="8.8.8.8"):
 
 
 
+def get_dns_config():
+    try:
+        with open("/etc/resolv.conf", "r", encoding="utf-8") as file:
+            lines = file.readlines()
+
+        servers = []
+
+        for line in lines:
+            line = line.strip()
+
+            if line.startswith("nameserver "):
+                server = line.split()[1]
+                servers.append(server)
+
+        print("\nDNS Configuration")
+
+        if servers:
+            for server in servers:
+                print(f"DNS Server      : {server}")
+        else:
+            print("DNS Server      : No nameserver found")
+
+    except OSError as error:
+        print(f"DNS Configuration Error: {error}")
+
+
+
 if __name__ == "__main__":
     get_network_info()
     get_default_gateway()
+    get_dns_config()
     check_dns()
     check_connectivity()
