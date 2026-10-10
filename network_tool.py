@@ -110,6 +110,24 @@ def get_dns_config():
         print(f"DNS Configuration Error: {error}")
 
 
+def get_routing_table():
+    result = subprocess.run(
+        ["ip", "route"],
+        capture_output=True,
+        text=True,
+        timeout=5
+    )
+
+    print("\nRouting Table")
+
+    if result.returncode != 0:
+        print("Error: Unable to retrieve routing table")
+        return
+
+    if result.stdout.strip():
+        print(result.stdout.strip())
+    else:
+        print("No routes found")
 
 if __name__ == "__main__":
     get_network_info()
@@ -117,3 +135,4 @@ if __name__ == "__main__":
     get_dns_config()
     check_dns()
     check_connectivity()
+    get_routing_table()
