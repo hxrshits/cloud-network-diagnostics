@@ -129,6 +129,15 @@ def get_routing_table():
     else:
         print("No routes found")
 
+def check_port(host, port):
+    try:
+        with socket.create_connection((host, port), timeout=3):
+            print(f"Port {port:<5} : OPEN on {host}")
+
+    except (socket.timeout, ConnectionRefusedError, OSError):
+        print(f"Port {port:<5} : CLOSED or UNREACHABLE on {host}")
+
+
 if __name__ == "__main__":
     get_network_info()
     get_default_gateway()
@@ -136,3 +145,8 @@ if __name__ == "__main__":
     check_dns()
     check_connectivity()
     get_routing_table()
+
+    print("\nPort Connectivity Checks")
+
+    check_port("google.com", 443)
+    check_port("google.com", 80)
