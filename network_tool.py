@@ -138,6 +138,48 @@ def check_port(host, port):
         print(f"Port {port:<5} : CLOSED or UNREACHABLE on {host}")
 
 
+def check_network_health():
+    print("\nNetwork Health Summary")
+
+    checks = {}
+
+    # Check 1: Default Gateway
+    result = subprocess.run(
+        ["ip", "route", "show", "default"],
+        capture_output=True,
+        text=True,
+        timeout=5
+    )
+
+    checks["Gateway"] = result.returncode == 0 and bool(result.stdout.strip())
+
+    # Check 2: DNS Resolution
+    try:
+        socket.gethostbyname("google.com")
+        checks["DNS"] = True
+    except socket.gaierror:
+        checks["DNS"] = False
+
+    # Check 3: HTTPS Connectivity
+    try:
+        with socket.create_connection(("google.com", 443), timeout=3):
+            checks["HTTPS"] = True
+    except OSError:
+        checks["HTTPS"] = False
+
+    # Display results
+    for name, status in checks.items():
+        result = "PASS" if status else "FAIL"
+        print(f"{name:<10}: {result}")
+
+    # Overall status
+    if all(checks.values()):
+        print("\nOverall Network Status: HEALTHY")
+    else:
+        print("\nOverall Network Status: DEGRADED")
+
+
+
 if __name__ == "__main__":
     get_network_info()
     get_default_gateway()
@@ -150,3 +192,4 @@ if __name__ == "__main__":
 
     check_port("google.com", 443)
     check_port("google.com", 80)
+    check_network_health()
