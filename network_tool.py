@@ -1,6 +1,8 @@
 import subprocess
 import re
 import socket
+import sys
+
 
 def get_network_info():
     result = subprocess.run(
@@ -179,17 +181,76 @@ def check_network_health():
         print("\nOverall Network Status: DEGRADED")
 
 
+def run_diagnostics():
+    print("\n" + "=" * 40)
+    print("       NETWORK DIAGNOSTICS")
+    print("=" * 40)
+
+    checks = {}
+
+    # Gateway check
+    gateway_result = subprocess.run(
+        ["ip", "route", "show", "default"],
+        capture_output=True,
+        text=True,
+        timeout=5
+    )
+
+    checks["Gateway"] = (
+        gateway_result.returncode == 0
+        and bool(gateway_result.stdout.strip())
+    )
+
+    # DNS check
+    try:
+        socket.gethostbyname("google.com")
+        checks["DNS"] = True
+    except socket.gaierror:
+        checks["DNS"] = False
+
+    # HTTPS check
+    try:
+        with socket.create_connection(
+            ("google.com", 443), timeout=3
+        ):
+            checks["HTTPS"] = True
+    except OSError:
+        checks["HTTPS"] = False
+
+    # Display diagnostic results
+    for name, status in checks.items():
+        print(f"{name:<12}: {'PASS' if status else 'FAIL'}")
+
+    print("\nTroubleshooting Advice")
+
+    if not checks["Gateway"]:
+        print("- Check your default gateway and routing configuration.")
+
+    if not checks["DNS"]:
+        print("- Check DNS configuration and name resolution.")
+
+    if not checks["HTTPS"]:
+        print("- Check internet connectivity, firewall rules, and port 443 access.")
+
+    if all(checks.values()):
+        print("- All diagnostic checks passed.")
+
+    print("=" * 40)
+
 
 if __name__ == "__main__":
-    get_network_info()
-    get_default_gateway()
-    get_dns_config()
-    check_dns()
-    check_connectivity()
-    get_routing_table()
+    if "--diagnose" in sys.argv:
+        run_diagnostics()
+    else:
+        get_network_info()
+        get_default_gateway()
+        get_dns_config()
+        check_dns()
+        check_connectivity()
+        get_routing_table()
 
-    print("\nPort Connectivity Checks")
+        print("\nPort Connectivity Checks")
+        check_port("google.com", 443)
+        check_port("google.com", 80)
 
-    check_port("google.com", 443)
-    check_port("google.com", 80)
-    check_network_health()
+        check_network_health()
