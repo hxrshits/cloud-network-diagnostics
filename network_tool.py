@@ -2,6 +2,7 @@ import subprocess
 import re
 import socket
 import sys
+import json
 
 
 def get_network_info():
@@ -238,9 +239,97 @@ def run_diagnostics():
     print("=" * 40)
 
 
+
+def generate_json_report():
+
+    report = {
+        "network_interface": None,
+        "ipv4_address": None,
+        "default_gateway": None,
+        "dns_servers": [],
+        "dns_resolution": "FAIL",
+        "https_connectivity": "FAIL",
+        "overall_status": "DEGRADED"
+    }
+
+    # Network interface and IPv4
+    result = subprocess.run(
+        ["ip", "-4", "-o", "addr", "show"],
+        capture_output=True,
+        text=True
+    )
+
+    if result.returncode == 0:
+        for line in result.stdout.splitlines():
+            parts = line.split()
+
+            if len(parts) >= 4:
+                report["network_interface"] = parts[1]
+                report["ipv4_address"] = parts[3].split("/")[0]
+                break
+
+    # Default gateway
+    result = subprocess.run(
+        ["ip", "route", "show", "default"],
+        capture_output=True,
+        text=True
+    )
+
+    if result.returncode == 0:
+        parts = result.stdout.split()
+
+        if "via" in parts:
+            report["default_gateway"] = parts[
+                parts.index("via") + 1
+            ]
+
+    # DNS configuration
+    try:
+        with open("/etc/resolv.conf", "r", encoding="utf-8") as file:
+            for line in file:
+                line = line.strip()
+
+                if line.startswith("nameserver "):
+                    report["dns_servers"].append(line.split()[1])
+
+    except OSError:
+        pass
+
+    # DNS resolution
+    try:
+        socket.gethostbyname("google.com")
+        report["dns_resolution"] = "PASS"
+    except socket.gaierror:
+        report["dns_resolution"] = "FAIL"
+
+    # HTTPS connectivity
+    try:
+        with socket.create_connection(
+            ("google.com", 443), timeout=3
+        ):
+            report["https_connectivity"] = "PASS"
+
+    except OSError:
+        report["https_connectivity"] = "FAIL"
+
+    # Overall network status
+    if (
+        report["default_gateway"]
+        and report["dns_resolution"] == "PASS"
+        and report["https_connectivity"] == "PASS"
+    ):
+        report["overall_status"] = "HEALTHY"
+
+    print(json.dumps(report, indent=4))
+
 if __name__ == "__main__":
-    if "--diagnose" in sys.argv:
+
+    if "--json" in sys.argv:
+        generate_json_report()
+
+    elif "--diagnose" in sys.argv:
         run_diagnostics()
+
     else:
         get_network_info()
         get_default_gateway()
